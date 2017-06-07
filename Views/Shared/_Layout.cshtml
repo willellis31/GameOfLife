@@ -1,0 +1,75 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - My ASP.NET Application</title>
+    <link href="~/Content/Site.css" rel="stylesheet" type="text/css" />
+    <link rel="shortcut icon" href="~/Content/gollogo.png">
+    <link href="~/Content/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <script src="~/Scripts/modernizr-2.6.2.js"></script>
+    <style>
+        .nopm {
+            padding: 0;
+            margin: 0;
+        }
+    </style>
+
+</head>
+<body>
+    <div class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                @Html.ActionLink("Home", "Index", "Home", new { area = "" }, new { @class = "navbar-brand nonhover" })
+               
+            </div>
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+
+                    <li>
+                        @Html.ActionLink("Templates", "Home", "UserTemplates", new { area = "" }, new { @class = "navbar-brand nonhover" })
+                    </li>
+                    
+                    <li>
+                        @Html.ActionLink("Games", "Home", "UserGames", new { area = "" }, new { @class = "navbar-brand nonhover" })
+                    </li>
+                    <!--make sure last-->
+                   @{
+                       //if someone has not logged in
+                       if (Session["UserEmail"] == null)
+                       {
+                        <li>@Html.ActionLink("Login", "Index", "Login", new { area = "" }, new { @class = "navbar-brand nonhover" })</li>
+                        <li>@Html.ActionLink("Register", "Create", "Register", new { area = "" }, new { @class = "navbar-brand nonhover" })</li>
+                       }
+                       else
+                       {
+                            <li>@Html.ActionLink("Logout", "Logout", "Login", new { area = "" }, new { @class = "navbar-brand nonhover" })</li>
+                           if ((bool)Session["isAdmin"] == true)
+                           {
+                                <li>@Html.ActionLink("Admin Site", "Admin", "Home", new { @style = "margin-left:170px;", @class = "navbar-brand ufli nonhover" })</li>
+                           }
+                        }
+                    }
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="container body-content">
+        @RenderBody()
+        <hr />
+        <footer style="font-size:9px;">
+            <p>A Web Technologies Project for <a style="margin-right:0;" href="https://www.rmit.edu.au">RMIT University</a>.       Created using .NET MVC, by <a style="margin-right:0;" href="http://www.davidpstevens.net">David Stevens</a> and William Ellis.</p>
+        </footer>
+    </div>
+
+    <script src="~/Scripts/jquery-1.10.2.min.js"></script>
+    <script src="~/Scripts/bootstrap.min.js"></script>
+    @RenderSection("scripts", false)
+</body>
+</html>

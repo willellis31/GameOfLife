@@ -1,0 +1,40 @@
+﻿
+@{
+    ViewBag.Title = "Home";
+    //use this to dynamically create links for our buttons.
+    var urlHelper = new UrlHelper(Html.ViewContext.RequestContext);
+    var url1 = urlHelper.Action("SelectTemplate", "UserTemplates");
+    var url2 = urlHelper.Action("ActiveGamesIndex", "UserGames");
+    var url3 = urlHelper.Action("SavedGames", "UserGames");
+}
+
+<h2>Games</h2>
+<div class="row">
+    
+    <div class="col-sm-4 col-lg-3 col-xs-12">
+        <button onClick="location.href = '@url1'" class="btn-block btn-lg btn-primary">Create Game</button>
+        <p>Create an active game from the list of templates on the site.</p>
+    </div>
+    
+
+        
+        <div class="col-sm-4 col-lg-3 col-xs-12">
+            <button onClick="location.href = '@url2'" class="btn-block btn-lg btn-primary">Active Games</button>
+            <p>View and resume your active games.</p>
+        </div>
+        
+
+        @{
+            //if someone is logged in show extra template features.
+            if (Session["UserEmail"] != null)
+            {
+
+                <div class="col-sm-4 col-lg-3 col-xs-12">
+                    <button onClick="location.href = '@url3'" class="btn-block btn-lg btn-primary">Saved Games</button>
+                    <p>View and resume your saved games.</p>
+                </div>
+
+            }
+
+        }
+    </div>

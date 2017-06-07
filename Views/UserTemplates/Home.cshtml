@@ -1,0 +1,37 @@
+﻿
+@{
+    ViewBag.Title = "Home";
+    //use this to dynamically create links for our buttons.
+    var urlHelper = new UrlHelper(Html.ViewContext.RequestContext);
+    var url1 = urlHelper.Action("Index", "UserTemplates");
+    var url2 = urlHelper.Action("Create", "UserTemplates");
+    var url3 = urlHelper.Action("MyTemplates", "UserTemplates");
+}
+
+<h2>Templates</h2>
+    <div class="row">
+        <div class="col-sm-4 col-lg-3 col-xs-12">
+
+            <button onClick="location.href = '@url1'" class="btn-block btn-lg btn-primary">All Templates</button>
+
+            <p>View all templates created by registered users on the site.</p>
+        </div>
+    @{
+        //if someone is logged in show extra template features.
+        if (Session["UserEmail"] != null)
+        {
+            
+
+                <div class="col-sm-4 col-lg-3 col-xs-12">
+                    <button onClick="location.href = '@url2'" class="btn-block btn-lg btn-primary">Create Template</button>
+                    <p>Create a custom template to list on the site.</p>
+                </div>
+            <div class="col-sm-4 col-lg-3 col-xs-12">
+                <button onClick="location.href = '@url3'" class="btn-block btn-lg btn-primary">My Templates</button>
+                <p>View all your templates you have created.</p>
+            </div>
+
+        }
+
+    }
+</div>

@@ -1,0 +1,66 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    //use this to dynamically create links for our buttons.
+    var urlHelper = new UrlHelper(Html.ViewContext.RequestContext);
+    var url = urlHelper.Action("Index", "UserTemplates");
+    var url2 = urlHelper.Action("SelectTemplate", "UserTemplates");
+}
+
+<header class="jumbotron">
+
+@{
+    if (ViewBag.Permission == true)
+    {
+        <div id="riderctmessage" style="top: 50px;position: fixed; padding: 7px; border-radius: 2px; background-color: #740000; color:white;" class="help-block">Sorry, but you don't have permission to do that!</div>
+    }
+
+    if (ViewBag.Redirect == true)
+    {
+        <div id="riderctmessage" style="top: 50px;position: fixed; padding: 7px; border-radius: 2px; background-color: #740000; color:white;" class="help-block">Sorry, but you must be logged in to view that!</div>
+    }
+
+
+    if (Session["Welcome"] != null && (bool)Session["Welcome"] == true)
+    {
+        <div id="successmessage" style="top: 50px;position: fixed; padding: 7px; border-radius: 2px; background-color: #FFFF00;" class="help-block">Welcome @Session["UserFirstName"], You have succesfully registered!</div>
+    }
+    else
+    {
+        if (@Session["UserFirstName"] != null)
+        {
+            <div id="successmessage" style="top: 50px;position: fixed; padding: 7px; border-radius: 2px; background-color: #FFFF00;" class="help-block">Welcome back @Session["UserFirstName"]</div>
+        }
+
+    }
+}
+    @{ 
+        Session["Welcome"] = false;
+    }
+    <h1>Conway's Game of Life</h1><h2>Web Edition</h2><kbd>House Sharp</kbd>
+</header>
+<div class="row">
+    
+    <div class="col-sm-4">
+        <h3>About</h3>
+        <blockquote>
+            The Game of Life, also known simply as Life, is a cellular automaton devised by the British mathematician John Horton Conway in 1970.
+
+            The "game" is a zero-player game, meaning that its evolution is determined by its initial state, requiring no further input. One interacts with the Game of Life by creating an initial configuration and observing how it evolves, or, for advanced "players", by creating patterns with particular properties.
+        </blockquote>
+        <p>From the <a href="https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life">Game of Life Wikipedia Entry</a></p>
+    </div>
+    <div class="col-sm-8">
+        <button onClick="location.href = '@url'" class="btn-block btn-lg btn-primary" >Browse Game Templates</button>
+        <button onClick="location.href = '@url2'" class="btn-block btn-lg btn-primary">Create a new Game</button>
+    </div>
+</div>
+
+@section scripts{
+    <script>
+        $(document).ready(function () {
+            $('.help-block').fadeIn(300);
+            $('.help-block').delay(5000).fadeOut(1000);
+        }); 
+    </script>
+    }

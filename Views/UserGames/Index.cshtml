@@ -1,0 +1,72 @@
+﻿@model IEnumerable<WebGameOfLife.UserGame>
+
+
+<h2>@ViewBag.Title</h2>
+
+@{
+    if (Model != null)
+    {
+        <table class="table">
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Name)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Height)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Width)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Cells)
+                </th>
+                <th>
+                    Options
+                </th>
+                <th></th>
+            </tr>
+
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Height)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Width)
+                    </td>
+                    <td>
+                       @MyHelpers.CellsTable(item.Cells, item.Height, item.Width)
+                    </td>
+                    <td>
+                        @Html.ActionLink("Play", "Play", new { id = item.UserGameID })
+
+                        @{
+                            if (ViewBag.Title == "My Saved Games")
+                            {
+                                @Html.ActionLink("Delete", "DeleteDB", new { id = item.UserGameID })
+                            }
+
+                            else
+                            {
+                                @Html.ActionLink("Delete", "DeleteActive", new { id = item.UserGameID })
+                            }
+
+                        }
+                        
+                    </td>
+                </tr>
+            }
+
+        </table>
+    }
+    else
+    {
+        <h3>You have no active games</h3>
+    }
+
+}
+

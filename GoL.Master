@@ -1,0 +1,34 @@
+﻿<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="GoL.master.cs" Inherits="WebGameOfLife.Site1" %>
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head runat="server">
+    <title></title>
+    <script type="text/javascript" src="Scripts/jquery-1.10.2.js"></script>
+    <link rel="stylesheet" href="Content/bootstrap.min.css"/>
+    <script type="text/javascript" src="Scripts/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="Content/font-awesome.min.css"/>
+    
+    <asp:ContentPlaceHolder ID="head" runat="server">
+    </asp:ContentPlaceHolder>
+</head>
+<body>
+    <header class="header" style="width: 100%; height:60px; background-color:#222222;">
+        <h3 style="color:#999; margin: 0; padding: 15px 0 0 25px;">Web Game of Life - Administration</h3>
+        <i style="color:white; margin-right:5px;" class="fa fa-arrow-circle-left"></i><a href="/Home/Index">Back to Public Site</a>
+    </header>
+    <div class="container">
+        
+        <div class="main">
+            <form id="form1" runat="server">
+
+                    <asp:ContentPlaceHolder ID="ContentPlaceHolderMain" runat="server">
+        
+                    </asp:ContentPlaceHolder>
+
+            </form>
+        </div>
+    </div>
+</body>
+</html>

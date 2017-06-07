@@ -1,0 +1,48 @@
+﻿@helper CellsTable(string Cells, int Height, int Width){
+//make our Cells a char array
+var letters = Cells.Trim().ToCharArray();
+//okay we are going to write a loop that will transform our cells string to a 2-d array
+
+//a list for our grid
+var matrix = new List<List<char>>();
+for (int y = 0; y < Height; y++)
+{
+    //new row array
+    var row = new List<char>();
+    for (int x = 0; x < Width; x++)
+    {
+        int index = (y * Width) + x;
+        row.Add(letters[index]);
+    }
+    matrix.Add(row);
+}
+<table>
+    @{
+        foreach (List<char> row in matrix)
+        {
+            <tr>
+                @{
+                    foreach (char cell in row)
+                    {
+                        if (cell == 'x')
+                        {
+                            <td width='10' height='10' style='background-color: black;'></td>
+                        }
+
+                        else
+                        {
+                            <td width='10' height='10'></td>
+                        }
+
+                    }
+                }
+
+            </tr>
+        }
+    }
+        
+</table>
+
+
+}
+

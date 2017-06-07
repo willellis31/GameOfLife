@@ -1,0 +1,157 @@
+﻿@model WebGameOfLife.UserGame
+
+@{
+    ViewBag.Title = "Play";
+}
+
+<h2>Play</h2>
+
+<div>
+    <h4>UserGame</h4>
+    <hr />
+    
+        <div class="row">
+            <div id="gameinfo" class="col-sm-3">
+                <dl class="dl-horizontal">
+                    <dt>
+                        @Html.DisplayNameFor(model => model.Name)
+                    </dt>
+
+                    <dd>
+                        @Html.DisplayFor(model => model.Name)
+                    </dd>
+
+                    <dt>
+                        @Html.DisplayNameFor(model => model.Height)
+                    </dt>
+
+                    <dd>
+                        @Html.DisplayFor(model => model.Height)
+                    </dd>
+
+                    <dt>
+                        @Html.DisplayNameFor(model => model.Width)
+                    </dt>
+
+                    <dd>
+                        @Html.DisplayFor(model => model.Width)
+                    </dd>
+                </dl>
+            </div>
+            <div id="gamecells" class="col-sm-6">
+                <dl class="dl-horizontal">
+                    <dt>
+                        @Html.DisplayNameFor(model => model.Cells)
+                    </dt>
+
+                    <dd id="cellsval" value="@Html.DisplayFor(model => model.Cells)">
+                        @Html.Raw(ViewBag.gamegrid)
+                    </dd>
+                    
+                </dl>
+            </div>
+            <div id="gamebuttons" class="col-sm-3">
+                <div class="row"><button id="playbtn" class="btn-lg btn-primary" onclick="PlayGame()">Start</button></div> 
+                <div class="row"><button id="stopbtn" class="btn-lg btn-default" onclick="StopGame()" disabled>Stop</button></div>
+                @{
+                    //printing user functions
+                    if (Session["UserID"] != null)
+                    {
+                        //someone is logged on.
+                        <div class="row"><a href='@Url.Action("ActiveGamesIndex", "UserGames")'><button id="delbtn" class="btn-lg btn-danger">Delete Game</button></a></div>
+                        <div class="row"><button id="savebtn" class="btn-lg btn-primary" onclick="SaveGame()">Save</button></div>
+                    }
+                }
+                
+            </div>
+
+        </div>
+
+
+
+
+</div>
+<input type="hidden" id="continue" value="stop"/>
+<p>
+    @Html.ActionLink("Back to List", "ActiveGamesIndex")
+</p>
+@section scripts {
+    <script>
+        var intervalid;
+        function StopGame()
+        {
+            $('#continue').val("stop");
+            $('#stopbtn').removeAttr('disabled');
+            $('#playbtn').attr('disabled');
+            clearInterval(intervalid);
+        }
+        function PlayGame()
+        {
+
+            //check if we are already playing a game, no point doing it twice.
+            if($('#continue').val() == "play")
+                return false;
+            $('#continue').val("play");
+            $('#stopbtn').removeAttr('disabled');
+            $('#playbtn').attr('disabled');
+            intervalid = window.setInterval(TakeTurn, 1000);
+        }
+
+        function TakeTurn()
+        {
+            var cells = $('#cellsval').attr("value");
+            var json = { 'Cells': cells, 'Height' : @Model.Height, 'Width' : @Model.Width, 'UserGameID' :@Model.UserGameID,};
+            var sendval = JSON.stringify(json);
+
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("TakeTurn")',
+                contentType: "application/json; charset=utf-8",
+                data: sendval,
+                dataType: 'text',
+                success: function (data) { var result = JSON.parse(data); $('#cellsval').html(result.html); $('#cellsval').attr('value', result.val); }
+        });
+
+        }
+
+    </script>
+    <script>
+        function SaveGame()
+        {
+            // Store the current Model details
+            var json = { 'UserGameID': @Model.UserGameID, 'UserID': @Model.UserID, 'Name': "@Model.Name", 'Height': @Model.Height, 'Width': @Model.Width,};
+            // Create JSON
+            var sendval = JSON.stringify(json);
+            // Post data
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("SaveGame")',
+                contentType: "application/json; charset=utf-8",
+                data: sendval,
+                dataType: 'text',
+                success: function (data) { alert('Game Saved'); },
+                error: function () { alert('failed'); }
+            });
+            
+        }
+
+        function DeleteGame()
+        {
+            //Store the current Models UserGameID and UserID
+            var json = {'UserGameID' : @Model.UserGameID, 'UserID' : @Model.UserID};
+            // Create JSON
+            var sendval = JSON.stringify(json);
+            // Post data and request
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("Delete")',
+                contentType: "application/json; charset=utf-8",
+                data: sendval,
+                dataType: 'text',
+                success: function (data) { alert('Game Deleted'); },
+                error: function () { alert('failed'); }
+            });
+        }
+    </script>
+
+    }

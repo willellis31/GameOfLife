@@ -1,0 +1,58 @@
+﻿@model WebGameOfLife.UserTemplate
+
+@{
+    ViewBag.Title = "Select Template";
+}
+
+<h2 style="margin-bottom:20px;">Select Template</h2>
+<p style="margin-bottom:50px;">Select from the available templates as seed for your new game.</p>
+<div class="row">
+    <div class="col-sm-4">
+        @using (Html.BeginForm("CreateNewGame", "UserGames"))
+        {
+            @Html.DropDownList("UserTemplateID", null, htmlAttributes: new { @class = "form-control" })
+            <button style="margin-top:20px;" id="nextbtn" class="btn-lg btn-primary">Next</button>
+        }
+
+    </div>
+    <div class="col-sm-4">
+        <div id="displaycells"></div>
+    </div>
+</div>
+
+@section scripts{
+    <script>
+        //run initially on game startup
+        GetDisplayCells();
+
+        //each time we change it the display cells
+        $('#UserTemplateID').change(function () {
+            GetDisplayCells();
+        });
+
+        $('#UserTemplateID').keyup(function () {
+            GetDisplayCells();
+        });
+
+
+        //This function will retrieve the cells template HTML for display when we select a template
+        function GetDisplayCells()
+        {
+            id = $('#UserTemplateID').val();
+            var json = { 'templateid': id , 'name' : 'default'};
+            var sendval = JSON.stringify(json);
+            var url = '@Url.Action("TemplateRequest")';
+
+            $.ajax({
+                type: "POST",
+                url: url,
+                contentType: "application/json; charset=utf-8",
+                data: sendval,
+                dataType: 'text',
+                success: function (data) { var result = JSON.parse(data); $('#displaycells').html(result.html); }
+            });
+        }
+    </script>
+
+
+}

@@ -1,0 +1,83 @@
+﻿@model IEnumerable<WebGameOfLife.UserTemplate>
+
+
+<h2>@ViewBag.Title</h2>
+
+<p>
+@{
+    //if someone is logged in
+    if (Session["UserEmail"] != null)
+    {
+        @Html.ActionLink("Create New", "Create")
+    }
+}
+   
+    @using (Html.BeginForm())
+    {
+    <p><i class="fa fa-search"></i>
+        @Html.TextBox("name") <br />
+        <input type="submit" value="Search" />
+    </p>
+    }
+    
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Name)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Height)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Width)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Cells)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.User.Email)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.Name)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Height)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Width)
+        </td>
+        <td>
+            @MyHelpers.CellsTable(item.Cells, item.Height, item.Width)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.User.Email)
+        </td>
+        <td>
+            @Html.ActionLink("Create Active Game", "CreateGame", new { id = item.UserTemplateID })  
+
+            @{
+                //if someone is logged ons
+                if (Session["UserID"] != null)
+                {                    
+                    //then check we are on the right page
+                    if (ViewBag.Title == "My Templates")
+                    {
+                        //print the delete link
+                        @Html.ActionLink("Delete", "Delete", new { id = item.UserTemplateID })
+                    }
+
+                }
+            }
+            
+            
+        </td>
+    </tr>
+}
+
+</table>

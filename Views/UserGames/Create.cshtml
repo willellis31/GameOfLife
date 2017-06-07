@@ -1,0 +1,200 @@
+﻿@model WebGameOfLife.UserGame
+
+@{
+    ViewBag.Title = "Create";
+}
+
+<h2>Create a New Game</h2>
+
+<div class="row">
+    <h4>Template Details</h4>
+    <table>
+        <tr>
+            <td>
+                @Html.Label("Template Name", htmlAttributes: new { @class = "control-label col-md-6" })
+            </td>
+
+            <td class="col-md-6">
+                @ViewBag.Template.Name
+            </td>
+        </tr>
+        <tr>
+            <td>
+                @Html.Label("Height", htmlAttributes: new { @id = "temph", @value = ViewBag.Template.Height, @class = "control-label col-md-6" })
+            </td>
+
+            <td class="col-md-6">
+                @ViewBag.Template.Height
+            </td>
+        </tr>
+        <tr>
+            <td>
+                @Html.Label("Width", htmlAttributes: new { @id = "tempw", @value = ViewBag.Template.Width, @class = "control-label col-md-6" })
+            </td>
+
+            <td class="col-md-6">
+                @ViewBag.Template.Width
+            </td>
+        </tr>
+        <tr>
+            <td>
+                @Html.Label("Cells", htmlAttributes: new { @id = "tempcells", @value = ViewBag.Template.Cells, @class = "control-label col-md-6" })
+            </td>
+
+            <td class="col-md-6">
+                @Html.Raw(ViewBag.HTMLcells)
+            </td>
+        </tr>
+    </table>
+</div>
+
+<div class="row">
+    <h4>User Game</h4>
+    <div class="col-sm-4">
+        @using (Html.BeginForm("Create", "UserGames", FormMethod.Post, new { id = "gameform" }))
+        {
+            @Html.AntiForgeryToken()
+
+            <div class="form-horizontal">
+                
+                <div class="form-group">
+                    <div class="col-md-10">
+                        <input type="hidden" name="Cells" value="" id="Cells" />
+                        @Html.EditorFor(model => model.UserID, new { htmlAttributes = new { @class = "form-control" } })
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Height, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.Height, new { htmlAttributes = new { @min = 0, @max = 60, @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.Height, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Width, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.Width, new { htmlAttributes = new { @min = 0, @max = 60, @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.Width, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-md-2" for="xoffset">X Offset</label>
+                    <div class="col-md-10">
+                        <input class="form-control" min="0" max="60" id="xoffset" name="xoffset" type="number" value="0" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-md-2" for="xoffset">Y Offset</label>
+                    <div class="col-md-10">
+                        <input class="form-control" min="0" max="60" id="yoffset" name="yoffset" type="number" value="0" />
+                    </div>
+                </div>
+
+
+            </div>
+            <input id="tempid" type="hidden" value="@ViewBag.TemplateID" />
+        }
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <button onclick="validateForm()" value="Create" class="btn btn-default">Create</button>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-4">
+        <p>All games must have a name, and the game must have enough space for the height and width of the template, plus any offset.</p>
+    </div>
+
+</div>
+@section scripts{ 
+<script>
+    function validateForm()
+    {
+        var height = parseInt($('#Height').val());
+        var width = parseInt($('#Width').val());
+        var xoffset = parseInt($('#xoffset').val());
+        var yoffset = parseInt($('#yoffset').val());
+        var temph = parseInt($('#temph').attr("value"));
+        var tempw = parseInt($('#tempw').attr("value"));
+
+        if (xoffset > 60 || yoffset > 60 || height > 60 || width > 60)
+        {
+            alert("Values cannot be greater than 60");
+            return false;
+        }
+
+        if (xoffset < 0 || yoffset < 0 || height < 0 || width < 0)
+        {
+            alert("Values cannot be negative");
+            return false;
+        }
+        if ($('#Name').val() == "")
+        {
+            alert("Game must have a name!");
+            return false;
+        }
+            
+        if ((yoffset + temph) > height)
+        {
+            alert("Game is not tall enough!");
+            return false;
+        }
+        if ((xoffset + tempw) > width)
+        {
+            alert("Game is not wide enough!");
+            return false;
+        }
+                        
+        updateCells();
+    }
+
+
+    function updateCells() {
+        //lets send an ajax request to insert the template
+        //here we are going to make the game string.
+        var height = $('#Height').val();
+        var width = $('#Width').val();
+        var xoffset = $('#xoffset').val();
+        var yoffset = $('#yoffset').val();
+        var tempcells = $('#tempcells').attr("value");
+        var temph = $('#temph').attr("value");
+        var tempw = $('#tempw').attr("value");
+        var cells = $('#cellsval').text();
+        var templateID = $('#tempid').val();
+        var json = { "templateid": templateID, "templateX": xoffset, "templateY": yoffset, "gameHeight": height, "gameWidth": width };
+        var sendval = JSON.stringify(json);
+
+        $.ajax({
+            asyc: false,
+            type: "POST",
+            url: '@Url.Action("CreateAndInsertTemplate")',
+            contentType: "application/json; charset=utf-8",
+            data: sendval,
+            dataType: 'text',
+            success: function (data) { $('#Cells').val(data); $('#gameform').submit(); },
+            error: function () { alert('failed'); }
+        });
+            return true;
+
+    }
+
+
+    function printCells(game, height, width)
+    {
+        var output = "";
+        for(var y = 0; y < height; y ++)
+            for(var x = 0; x <width; x++)
+                output += game[y][x];
+        return output;
+    }
+
+</script>
+}
